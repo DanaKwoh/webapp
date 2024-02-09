@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
 //when use Post, create a new user
 const createUser = async (req, res) => {
@@ -27,23 +28,31 @@ const updateUser = async (req, res) => {
   if (invalidFields.length > 0) {
     return res.status(400).json({ error: `Invalid field(s): ${invalidFields.join(', ')}` });
   }
-  
   try {
-    // Only update their own account information
     if (req.user.username !== req.body.username) {
       return res.status(403).json({ error: "You are not allowed to update another user's account information" });
     }
     
-    // Update the user's account information
-    const [affectedRows, updatedUsers] = await User.update(req.body, {
-      where: { username: req.user.username },
-      returning: true // Get the updated user object
+    const user = await User.findOne({ where: { username: req.user.username } });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update 
+    if (req.body.password) {
+      const hashedPassword = await bcrypt.hash(req.body.password, 15);
+      req.body.password = hashedPassword;
+    }
+    const [affectedRows] = await User.update(req.body, {
+      where: { username: req.user.username }
     });
 
     // Check if affected 
     if (affectedRows === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
+
+    // Update the account_updated field
     await User.update({ account_updated: new Date() }, { where: { username: req.user.username } });
     return res.status(200).json({ result: "Successfully updated"});
   } catch (error) {
