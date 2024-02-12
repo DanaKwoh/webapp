@@ -1,18 +1,33 @@
-name: Compile Check
+name: Test Application
 
 on:
-  pull_request:
+  push:
     branches:
-      - '*'
+      - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Intentionally fail the workflow
-      - name: Fail Workflow
-        run: exit 1
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run app.js script
+        run: node app.js &
+
+      - name: Wait for application to start
+        run: sleep 10
+
+      - name: Check health URL
+        run: |
+          health_response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/healthz)
+          if [ "$health_response" -eq 200 ]; then
+            echo "Health check successful"
+          else
+            echo "Health check failed: $health_response"
+            exit 1
+          fi
