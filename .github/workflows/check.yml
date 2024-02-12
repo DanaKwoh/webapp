@@ -13,9 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Add steps to compile your code
-      # For example, compiling code, running lint checks, etc.
-
       # Intentionally fail the workflow
       - name: Fail Workflow
         run: exit 1
