@@ -1,21 +1,21 @@
-name: Merge Check
+name: Compile Check
 
 on:
   pull_request:
-    types: [closed]
+    branches:
+      - '*'
 
 jobs:
-  merge-check:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check if pull request was merged
-        id: merged
-        run: echo "::set-output name=is_merged::$(echo ${GITHUB_EVENT_NAME})"
+      # Add steps to compile your code
+      # For example, compiling code, running lint checks, etc.
 
-      - name: Fail if pull request was merged
-        if: steps.merged.outputs.is_merged == 'pull_request'
+      # Intentionally fail the workflow
+      - name: Fail Workflow
         run: exit 1
