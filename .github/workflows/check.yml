@@ -1,0 +1,21 @@
+name: Merge Check
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  merge-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check if pull request was merged
+        id: merged
+        run: echo "::set-output name=is_merged::$(echo ${GITHUB_EVENT_NAME})"
+
+      - name: Fail if pull request was merged
+        if: steps.merged.outputs.is_merged == 'pull_request'
+        run: exit 1
