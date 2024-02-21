@@ -22,7 +22,7 @@ const initializeApp = async () => {
 };
 
 // Attach health router with health check middleware
-app.use('/healthz', checkHealthMiddleware, healthRouter);
+app.use('/healthz1', checkHealthMiddleware, healthRouter);
 
 // Attach user router
 app.use('/v1/user', userRouter);
