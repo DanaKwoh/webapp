@@ -2,10 +2,9 @@ name: Test2 Check
 
 on:
   pull_request:
-    types: [opened]
     branches:
       - main
-
+    types: [opened, synchronize]
 jobs:
   test:
     runs-on: ubuntu-latest

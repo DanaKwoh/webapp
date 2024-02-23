@@ -2,9 +2,9 @@ name: Syntax Check
 
 on:
   pull_request:
-    types: [opened]
     branches:
       - main
+    types: [opened, synchronize]
 
 jobs:
   syntax_check:

@@ -2,9 +2,9 @@ name: Test1 Check
 
 on:
   pull_request:
-    types: [opened]
     branches:
       - main
+    types: [opened, synchronize]
 
 jobs:
   test:
