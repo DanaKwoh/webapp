@@ -19,7 +19,7 @@ source "googlecompute" "centos_stream_8" {
   network             = "default"
   tags                = ["http-server"]
   credentials         = var.credentials_gcp
-
+}
 
 build {
   sources = ["source.googlecompute.centos_stream_8"]
