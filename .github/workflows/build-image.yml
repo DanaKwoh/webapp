@@ -25,7 +25,7 @@ jobs:
       
 
       - name: Run integration tests
-        run: node tests/test2.js
+        run: node ../tests/test2.js
 
       - name: Build Artifact
         run: |
