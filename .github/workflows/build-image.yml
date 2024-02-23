@@ -21,6 +21,8 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
+        
+      
 
       - name: Run integration tests
         run: node tests/test2.js
@@ -53,4 +55,6 @@ jobs:
       # Build custom image using Packer
       - name: Build Custom Image
         run: packer build custom_image.pkr.hcl
+        env:
+          credentials_gcp: ${{ secrets.CREDENTIAL_GCP }}
 
