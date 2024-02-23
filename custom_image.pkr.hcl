@@ -6,7 +6,7 @@ packer {
     }
   }
 }
-
+variable "credentials_file_path" {}
 
 source "googlecompute" "centos_stream_8" {
   project_id          = "cloudcomputing-415019"
@@ -18,7 +18,7 @@ source "googlecompute" "centos_stream_8" {
   image_family        = "centos-stream-8"
   network             = "default"
   tags                = ["http-server"]
-  credentials         = var.credentials_gcp
+  credentials_file         = var.credentials_file_path
 }
 
 build {
