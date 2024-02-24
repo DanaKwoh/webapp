@@ -13,12 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up MySQL
-        uses: actions/setup-mysql
-        with:
-          username: ${{ secrets.DB_USER }}
-          password: ${{ secrets.DB_PASSWORD }}
-
+      - name: Set up MySQL username and password
+        run: |
+          # Start MySQL server if not already started
+          sudo systemctl start mysql.service
+      
+          # Set up username and password
+          sudo mysql -e "CREATE USER '${{secrets.DB_USER}}'@'localhost' IDENTIFIED BY '${{secrets.DB_PASSWORD}}';"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
