@@ -14,20 +14,26 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install MySQL server and client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-server mysql-client
+        run: sudo mysqld_safe --skip-grant-tables &
+
 
       - name: Start MySQL service
-        run: sudo systemctl start mysql
+        run: mysql -uroot
 
-      - name: Wait for MySQL to start
-        run: sudo systemctl status mysql.service
+      # - name: Wait for MySQL to start
+      #   run: sudo systemctl status mysql.service
 
       - name: Set up MySQL root password
         run: |
-          sudo mysql -u root -p"${{ secrets.DB_PASSWORD }}" -e "CREATE USER '${{secrets.DB_USER}}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}'; GRANT ALL PRIVILEGES ON *.* TO 'new_user'@'localhost'; FLUSH PRIVILEGES;"
-
+          use mysql;
+          update user set authentication_string=PASSWORD("${{secrets.DB_PASSWORD}}") where User='${{secrets.DB_USER}}';
+          flush privileges;
+          quit
+      - name: Stop & Start mySQL
+        run: |
+          sudo /etc/init.d/mysql stop
+          sudo /etc/init.d/mysql start
+          
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
