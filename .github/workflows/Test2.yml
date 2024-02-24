@@ -26,8 +26,8 @@ jobs:
 
       - name: Set up MySQL root password
         run: |
-          sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}'; FLUSH PRIVILEGES;"
-
+          sudo mysql -u root -p"${{ secrets.DB_PASSWORD }}"
+      
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
