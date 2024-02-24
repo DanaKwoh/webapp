@@ -8,32 +8,21 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DB_DATABASE: ${{secrets.DB_NAME}}
+      DB_USER: ${{secrets.DB_USER}}
+      DB_PASSWORD: ${{secrets.DB_PASSWORD}}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install MySQL server and client
-        run: sudo mysqld_safe --skip-grant-tables &
-
-
-      - name: Start MySQL service
-        run: mysql -uroot
-
+      - name: Start MySQL
+        run: sudo /etc/init.d/mysql start
+          
       # - name: Wait for MySQL to start
       #   run: sudo systemctl status mysql.service
 
-      - name: Set up MySQL root password
-        run: |
-          use mysql;
-          update user set authentication_string=PASSWORD("${{secrets.DB_PASSWORD}}") where User='${{secrets.DB_USER}}';
-          flush privileges;
-          quit
-      - name: Stop & Start mySQL
-        run: |
-          sudo /etc/init.d/mysql stop
-          sudo /etc/init.d/mysql start
-          
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
