@@ -19,6 +19,10 @@ jobs:
         with:
           node-version: '14'
 
+      # Write package.json content to a file
+      - name: Write package.json
+        run: npm init -y
+        
       - name: Install dependencies
         run: npm install
 

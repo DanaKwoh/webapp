@@ -6,7 +6,10 @@ packer {
     }
   }
 }
-variable "credentials_file_path" {}
+variable "credentials_file_path" {
+  type    = string
+  default = "credentials.json"  # Set a default value
+}
 
 source "googlecompute" "centos_stream_8" {
   project_id          = "cloudcomputing-415019"

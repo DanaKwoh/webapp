@@ -21,7 +21,13 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
-        
+
+      # Write package.json content to a file
+      - name: Write package.json
+        run: npm init -y
+
+      - name: Install packages
+        run: npm install express sequelize dotenv mysql2 bcrypt basic-auth ci axios
 
       - name: Run integration tests
         run: node ../tests/test2.js

@@ -9,20 +9,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      # Set up any necessary services for integration testing
-      mysql:
-        image: mysql:latest
-        env:
-            MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Set up MySQL
+        uses: actions/setup-mysql@v2
+        with:
+          mysql-version: '5.7'
+          username: ${{ secrets.DB_USER }}
+          password: ${{ secrets.DB_PASSWORD }}
+
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -31,21 +28,8 @@ jobs:
     
       # Write package.json content to a file
       - name: Write package.json
-        run: |
-            cat << EOF > package.json
-            {
-                "name": "webapp",
-                "version": "1.0.0",
-                "description": "",
-                "main": "app.js",
-                "scripts": {
-                    "test": "echo \\"Error: no test specified\\" && exit 1"
-                },
-                "author": "Dana",
-                "license": "ISC"
-            }
-            EOF
-
+        run: npm init -y
+        
       - name: Install packages
         run: npm install express sequelize dotenv mysql2 bcrypt basic-auth ci axios
 
