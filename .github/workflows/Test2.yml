@@ -16,8 +16,7 @@ jobs:
       - name: Set up MySQL root password
         run: |
           sudo systemctl start mysql.service
-          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';"
-      
+          sudo systemctl status mysql.service
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
