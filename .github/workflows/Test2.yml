@@ -11,14 +11,20 @@ jobs:
     env:
       DB_USER: ${{secrets.DB_USER}}
       DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-   
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Start MySQL
-        run: sudo /etc/init.d/mysql start
+      - name: Install MySQL client
+        run: sudo apt-get install mysql-client -y
+
+      - name: Start MySQL service
+        run: sudo systemctl start mysql.service
+
+      - name: Wait for MySQL to start
+        run: sudo systemctl status mysql.service
+
           
       - name: Set up Node.js
         uses: actions/setup-node@v2
