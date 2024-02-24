@@ -9,9 +9,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      DB_DATABASE: ${{secrets.DB_NAME}}
       DB_USER: ${{secrets.DB_USER}}
       DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+   
 
     steps:
       - name: Checkout code
@@ -20,9 +20,6 @@ jobs:
       - name: Start MySQL
         run: sudo /etc/init.d/mysql start
           
-      # - name: Wait for MySQL to start
-      #   run: sudo systemctl status mysql.service
-
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
