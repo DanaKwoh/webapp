@@ -14,9 +14,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up MySQL
-        uses: actions/setup-mysql@v2
+        uses: actions/setup-mysql
         with:
-          mysql-version: '5.7'
           username: ${{ secrets.DB_USER }}
           password: ${{ secrets.DB_PASSWORD }}
 
