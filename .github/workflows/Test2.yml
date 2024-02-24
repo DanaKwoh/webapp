@@ -9,8 +9,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      DB_USER: ${{secrets.DB_USER}}
-      DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      MYSQL_DATABASE: ${{ secrets.DB_NAME }}
 
     steps:
       - name: Checkout code
