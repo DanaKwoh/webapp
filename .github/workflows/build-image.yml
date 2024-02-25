@@ -94,7 +94,7 @@ jobs:
           sudo systemctl enable systemd-service-file.service
 
       - name: Set up Packer
-        uses: hashicorp/setup-packer@v1
+        uses: hashicorp/setup-packer@v2
 
       - name: Run Packer
         run: |

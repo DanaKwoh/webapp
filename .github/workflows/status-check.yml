@@ -13,6 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
+      - name: Set up Credentials File
+        env:
+          CREDENTIALS_JSON: ${{ secrets.CREDENTIAL_GCP }}
+        run: |
+          echo "$CREDENTIALS_JSON" > credentials.json
+          echo "Credentials file created."
+
       - name: Install plugins for Packer
         run: packer init custom_image.pkr.hcl
 
@@ -23,3 +30,5 @@ jobs:
       # Run 'packer validate' to validate the Packer template
       - name: Validate Packer template
         run: packer validate custom_image.pkr.hcl
+   
+

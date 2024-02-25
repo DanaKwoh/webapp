@@ -21,7 +21,7 @@ source "googlecompute" "centos_stream_8" {
   image_family        = "centos-stream-8"
   network             = "default"
   tags                = ["http-server"]
-  credentials_file         = var.credentials_file_path
+  credentials_file    = var.credentials_file_path
 }
 
 build {
