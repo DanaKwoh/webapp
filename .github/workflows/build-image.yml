@@ -98,11 +98,11 @@ jobs:
         run:  zip -r webapp.zip .
         working-directory: ${{ github.workspace }}
             
-      - name: Archive Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: webapp-artifact
-          path: webapp.zip
+      # - name: Archive Artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: webapp-artifact
+      #     path: webapp.zip
 
      # Set up Packer and build custom image
       - name: Set up Packer and build custom image
@@ -111,6 +111,7 @@ jobs:
           version: 'latest'
       - name: Run Packer to build custom image
         run: |
+          cd ${{ github.workspace }}/webapp
           packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
-        working-directory: ${{ github.workspace }}/webapp
+        # working-directory: ${{ github.workspace }}/webapp
