@@ -9,5 +9,5 @@ network             = "default"
 tags                = ["http-server"]
 credentials_file    = "credentials.json"
 
-source      = "webapp.zip"
+source      = "app_artifact.zip"
 destination = "/tmp/webapp.zip"

@@ -95,7 +95,7 @@ jobs:
           version: 'latest'
       
       - name: Build Application Artifact
-        run:  zip -r webapp.zip .
+        run:  zip -r app_artifact.zip .
         working-directory: ${{ github.workspace }}
             
       # - name: Archive Artifact
@@ -104,14 +104,10 @@ jobs:
       #     name: webapp-artifact
       #     path: webapp.zip
 
-     # Set up Packer and build custom image
-      - name: Set up Packer and build custom image
-        uses: hashicorp/setup-packer@main
-        with:
-          version: 'latest'
       - name: Run Packer to build custom image
         run: |
-          cd ${{ github.workspace }}/webapp
+          cd ${{ github.workspace }}
+          ls ${{ github.workspace }}
           packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
         # working-directory: ${{ github.workspace }}/webapp
