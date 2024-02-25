@@ -96,7 +96,7 @@ jobs:
       
       - name: Build Application Artifact
         run:  zip -r webapp.zip .
-        working-directory: webapp
+        working-directory: ${{ github.workspace }}/webapp
             
       - name: Archive Artifact
         uses: actions/upload-artifact@v2
@@ -125,8 +125,8 @@ jobs:
       
       - name: Initialize Packer
         run: packer init .
-        working-directory: /tmp/webapp
+        working-directory: ${{ github.workspace }}/webapp
 
       - name: Build Custom Image with Packer
         run: packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
-        working-directory: /tmp/webapp
+        working-directory: ${{ github.workspace }}/webapp
