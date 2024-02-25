@@ -30,7 +30,7 @@ jobs:
         run: packer init custom_image.pkr.hcl
       
       - name: Build Application Artifact
-        run: zip -r webapp.zip .
+        run: zip -r app_artifact.zip .
 
       - name: Run packer fmt
         run: |
