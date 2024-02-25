@@ -102,7 +102,10 @@ jobs:
         with:
           name: webapp-artifact
           path: /tmp
-
+          
+      - name: List Artifact Contents
+        run: ls -al /tmp/webapp  # Adjust the path as needed
+        
       - name: Set up Packer
         uses: hashicorp/setup-packer@main
         with:
