@@ -95,7 +95,7 @@ jobs:
           version: 'latest'
       
       - name: Build Application Artifact
-        run:  zip -r webapp.zip webapp
+        run:  zip -r webapp.zip .
         working-directory: ${{ github.workspace }}
             
       - name: Archive Artifact
