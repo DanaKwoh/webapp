@@ -17,19 +17,23 @@ jobs:
       
 
       - name: Start MySQL Service
-        run: sudo apt-get update && sudo apt-get install -y mysql-client
+        run: |
+          sudo apt-get update
+          sudo apt-get install mysql-server
+          sudo systemctl start mysql
+          sudo systemctl enable mysql
 
+      - name: Lanuch SQL user
+        run: |
+          /usr/bin/mysql -u root -p
+          UPDATE mysql.user SET Password = PASSWORD('${{secrets.DB_PASSWORD}}') WHERE User = 'root';
+          FLUSH PRIVILEGES;
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Start MySQL service
-        run: sudo systemctl start mysql.service
-  
-      - name: Wait for MySQL to start
-        run: sudo systemctl status mysql.service
            
       # Write package.json content to a file
       - name: Write package.json
