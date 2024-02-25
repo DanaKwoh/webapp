@@ -20,14 +20,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install mysql-server
-          sudo systemctl start mysql
+          sudo systemctl start mysql.service
           sudo systemctl enable mysql
 
-      - name: Lanuch SQL user
+      - name: Log in as SQL root user
         run: |
-          /usr/bin/mysql -u root -p
-          UPDATE mysql.user SET Password = PASSWORD('${{secrets.DB_PASSWORD}}') WHERE User = 'root';
-          FLUSH PRIVILEGES;
+          sudo mysql -u root 
+      - name: set new pwd
+        run: |
+          flush privileages; use mysql;
+          ALTER USER 'root'@'localhost' IDENTIFIED BY '${{secrets.DB_PASSWORD}}';
+          
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
