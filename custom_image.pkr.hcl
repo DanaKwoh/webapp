@@ -75,29 +75,19 @@ source "googlecompute" "centos_stream_8" {
 build {
   sources = ["source.googlecompute.centos_stream_8"]
 
-  provisioner "file" {
-    source      = var.source
-    destination = var.destination
-  }
-
   # provisioner "file" {
-  #   source      = "config/"
-  #   destination = "/app/config/"
+  #   source      = var.source
+  #   destination = var.destination
   # }
+
 
   provisioner "shell" {
     inline = [
-      # Update and install necessary packages
-      "sudo apt-get update",
-      "sudo apt-get install -y nodejs npm",
-
       # Create non-login user and group
       "sudo groupadd -f csye6225",
       "sudo useradd -r -s /usr/sbin/nologin -g csye6225 csye6225",
 
-      # Unzip application artifacts
-      "sudo mkdir -p /app",
-      "sudo unzip /tmp/webapp.zip -d /app",
+      # Unzip application artifactsß
       "sudo chown -R csye6225:csye6225 /app",
 
       # Install application dependencies
