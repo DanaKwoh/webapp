@@ -90,18 +90,23 @@ jobs:
           path: webapp.zip
       
 
-  packer-build:
+  build-custom-image:
     needs: build-artifact  # This ensures Packer job runs only if the build job succeeds
     runs-on: ubuntu-latest
     steps:
-      - name: Setup gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-        # Setup and configure steps
+      # - name: Setup gcloud CLI
+      #   uses: google-github-actions/setup-gcloud@v2
+      #   # Setup and configure steps
 
       - name: Download Artifact
         uses: actions/download-artifact@v2
-        # Download artifact step
+        with:
+          name: webapp-artifact
 
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@main
+        with:
+          version: 'latest'
       - name: Build Custom Image with Packer
         run: |
           packer init .
