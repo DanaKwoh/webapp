@@ -82,7 +82,7 @@ jobs:
       - name: Build Application Artifact
         run: |
           cd ../
-          zip -r webapp.zip webapp
+          zip -r webapp.zip ../webapp
         
       - name: Archive Artifact
         uses: actions/upload-artifact@v2
