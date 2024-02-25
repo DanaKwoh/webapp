@@ -88,7 +88,6 @@ jobs:
           name: webapp-artifact
           path: |
             webapp.zip
-            !webapp/**.hcl
       
 
   build-custom-image:
@@ -103,6 +102,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: webapp-artifact
+          path: /home/runner/work
           
         
       - name: Set up Packer
@@ -112,6 +112,7 @@ jobs:
           
       - name: Build Custom Image with Packer
         run: |
+          cd webapp
           packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
         # Packer build step
