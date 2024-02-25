@@ -9,7 +9,7 @@ packer {
 
 variable "credentials_file_path" {
   type    = string
-  default = "credentials.json"  # Set a default value
+  default = "credentials.json" # Set a default value
 }
 
 source "googlecompute" "centos_stream_8" {
@@ -60,7 +60,7 @@ build {
       "sudo cp /app/webapp.service /etc/systemd/system/webapp.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable webapp.service",
-      
+
     ]
   }
 }
