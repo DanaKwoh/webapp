@@ -117,13 +117,11 @@ jobs:
           version: 'latest'
 
       - name: Checjk content
-        run:  ls
-        working-directory: ${{ github.workspace }}
-
+        run:  cd ${{ github.workspace }}
+     
       - name: Initialize Packer
         run: packer init .
-        working-directory: ${{ github.workspace }}
+
 
       - name: Build Custom Image with Packer
         run: packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
-        working-directory: ${{ github.workspace }}
