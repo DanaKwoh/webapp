@@ -120,7 +120,7 @@ jobs:
         run:  |
           pwd
           ls
-          cd ${{ github.workspace }}
+          cd /home/runner/work/webapp/
      
       - name: Initialize Packer
         run: packer init .
