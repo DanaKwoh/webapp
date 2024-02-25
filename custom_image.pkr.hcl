@@ -72,34 +72,36 @@ source "googlecompute" "centos_stream_8" {
   credentials_file    = var.credentials_file
 }
 
+
 build {
   sources = ["source.googlecompute.centos_stream_8"]
 
-  # provisioner "file" {
-  #   source      = var.source
-  #   destination = var.destination
-  # }
-
+  provisioner "file" {
+    source      = var.source
+    destination = var.destination # Destination folder in the image
+  }
 
   provisioner "shell" {
     inline = [
+      "set -e", // Exit immediately if any command fails
       # Create non-login user and group
       "sudo groupadd -f csye6225",
       "sudo useradd -r -s /usr/sbin/nologin -g csye6225 csye6225",
 
-      # Unzip application artifactsß
-      "sudo chown -R csye6225:csye6225 /app",
+      # Install unzip package
+      "sudo yum install -y unzip",
 
-      # Install application dependencies
-      "cd /app && sudo npm install",
+      # Change ownership of the copied application folder
+      "sudo mkdir -p /opt/csye6225",
+      "sudo chown -R csye6225:csye6225 /opt/csye6225",
+
+      # Unzip application artifacts
+      "sudo unzip -o /tmp/webapp.zip -d /opt/csye6225",
 
       # Copy and configure systemd service
-      "sudo cp /app/webapp.service /etc/systemd/system/webapp.service",
+      "sudo cp /opt/csye6225/webapp.service /etc/systemd/system/webapp.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable webapp.service",
-
     ]
   }
 }
-
-
