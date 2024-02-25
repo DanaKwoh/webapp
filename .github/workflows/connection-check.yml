@@ -22,7 +22,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-    
+          
+      - name: Start MySQL service
+        run: sudo systemctl start mysql.service
+  
+      - name: Wait for MySQL to start
+        run: sudo systemctl status mysql.service
+           
       # Write package.json content to a file
       - name: Write package.json
         run: npm init -y
