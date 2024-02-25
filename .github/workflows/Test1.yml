@@ -63,3 +63,9 @@ jobs:
       # Run integration tests
       - name: Run integration tests
         run: node tests/test1.js
+        
+      # Run integration tests
+      - name: Run integration tests
+        run: node tests/test2.js
+
+
