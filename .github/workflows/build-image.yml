@@ -95,37 +95,22 @@ jobs:
           version: 'latest'
       
       - name: Build Application Artifact
-        run:  zip -r webapp.zip .
+        run:  zip -r webapp.zip webapp
         working-directory: ${{ github.workspace }}
             
-      # - name: Archive Artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: webapp-artifact
-      #     path: webapp.zip
-    
+      - name: Archive Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: webapp-artifact
+          path: webapp.zip
 
-  build-custom-image:
-    needs: build-artifact  # This ensures Packer job runs only if the build job succeeds
-    runs-on: ubuntu-latest
-    steps:
-    
-
-      - name: Set up Packer
+     # Set up Packer and build custom image
+      - name: Set up Packer and build custom image
         uses: hashicorp/setup-packer@main
         with:
           version: 'latest'
-
-      - name: Checjk content
-        run:  |
-          
-          cd /home/runner/work/webapp/
-          pwd
-          ls
-     
-      - name: Initialize Packer
-        run: packer init .
-
-
-      - name: Build Custom Image with Packer
-        run: packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
+      - name: Run Packer to build custom image
+        run: |
+          packer init .
+          packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
+        working-directory: ${{ github.workspace }}/webapp
