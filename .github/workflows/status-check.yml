@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - '**/*.hcl' # Run this workflow for pull requests that include .hcl files
     types: [opened, synchronize]
 jobs:
   validate-packer-template:
