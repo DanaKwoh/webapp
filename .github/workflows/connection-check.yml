@@ -9,7 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
       
     steps:
       - name: Checkout code
@@ -21,24 +20,22 @@ jobs:
           mysql-version: "8.0"
           root-password: ${{secrets.DB_PASSWORD}}
 
-
-      -  name: connect via unix domain socket
-        run: mysql -uroot \
-          --protocol=SOCKET \
-          --socket=${{ steps.setup-mysql.outputs.base-dir }}/tmp/mysql.sock
-          -e 'SELECT version()'
-    
-      - name: configure the root certificate for connecting via SSL/TLS.
-        run: mysql -uroot \
-          --ssl --ssl-mode=--ssl-mode=REQUIRED \
-          --ssl-ca=${{ steps.setup-mysql.outputs.base-dir }}/var/ca.pem \
-          -e 'SELECT version()'
-
-      - name: Test MySQL Connection
+      - name: connect via unix domain socket
         run: |
-          mysql -h localhost -u my_user -pmy_password -e "SHOW DATABASES;"
+            mysql -uroot \
+              --protocol=SOCKET \
+              --socket=${{ steps.setup-mysql.outputs.base-dir }}/tmp/mysql.sock \
+              -e 'SELECT version()'
+  
+      - name: configure the root certificate for connecting via SSL/TLS.
+        run: |
+            mysql -uroot \
+              --ssl \
+              --ssl-mode=REQUIRED \
+              --ssl-ca=${{ steps.setup-mysql.outputs.base-dir }}/var/ca.pem \
+              -e 'SELECT version()'
 
-
+              
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
