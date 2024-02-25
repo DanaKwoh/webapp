@@ -34,7 +34,7 @@ jobs:
 
       - name: Run packer fmt
         run: |
-          packer fmt -check -diff custom-image.pkr.hcl
+          packer fmt -check -diff custom_image.pkr.hcl
           if [ $? -ne 0 ]; then
             echo "Packer fmt has made changes to the template. Please run 'packer fmt custom-image.pkr.hcl' locally and commit the changes."
             exit 1
