@@ -97,12 +97,7 @@ jobs:
       - name: Build Application Artifact
         run:  zip -r app_artifact.zip .
         working-directory: ${{ github.workspace }}
-            
-      # Delete existing custom image if it exists
-      - name: Delete existing custom image
-        run: |
-          gcloud compute images delete custom-image --quiet || true
-
+          
       - name: Run Packer to build custom image
         run: |
           cd ${{ github.workspace }}
