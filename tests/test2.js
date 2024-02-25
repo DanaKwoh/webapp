@@ -2,19 +2,6 @@ const axios = require('axios');
 
 async function runIntegrationTests() {
   try {
-    // Create an account
-    const createUserResponse = await axios.post('http://localhost:8080/v1/user/self', {
-      username: "testuser",
-      password: "testpassword",
-      lastName: "lastname",
-      firstName: "firstname"
-    });
-
-    // Ensure account creation was successful
-    if (createUserResponse.status !== 201) {
-      throw new Error('Failed to create user');
-    }
-
     // Update the account
     const updateUserResponse = await axios.put('http://localhost:8080/v1/user/self', {
       lastName: "updatedLastname",
