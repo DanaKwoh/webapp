@@ -29,6 +29,7 @@ jobs:
       - name: set new pwd
         run: |
           flush privileages; use mysql;
+          select User,Password,Host from user;
           ALTER USER 'root'@'localhost' IDENTIFIED BY '${{secrets.DB_PASSWORD}}';
           
 
