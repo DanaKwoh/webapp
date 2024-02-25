@@ -15,24 +15,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
+      - id: setup-mysql
+        uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: "8.0"
+          root-password: ${{secrets.DB_PASSWORD}}
 
-      - name: Install MySQL
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mysql-server
 
-      - name: Start MySQL Service
-        run: sudo systemctl start mysql
-
-      - name: Check MySQL Service Status
-        run: sudo systemctl status mysql --no-pager
-
-      - name: Set up MySQL User and Database
-        run: |
-          sudo mysql -e "CREATE DATABASE IF NOT EXISTS my_database;"
-          sudo mysql -e "CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'my_password';"
-          sudo mysql -e "GRANT ALL PRIVILEGES ON my_database.* TO 'my_user'@'localhost';"
-          sudo mysql -e "FLUSH PRIVILEGES;"
+      -  name: connect via unix domain socket
+        run: mysql -uroot \
+          --protocol=SOCKET \
+          --socket=${{ steps.setup-mysql.outputs.base-dir }}/tmp/mysql.sock
+          -e 'SELECT version()'
+    
+      - name: configure the root certificate for connecting via SSL/TLS.
+        run: mysql -uroot \
+          --ssl --ssl-mode=--ssl-mode=REQUIRED \
+          --ssl-ca=${{ steps.setup-mysql.outputs.base-dir }}/var/ca.pem \
+          -e 'SELECT version()'
 
       - name: Test MySQL Connection
         run: |
