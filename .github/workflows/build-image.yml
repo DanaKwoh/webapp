@@ -98,11 +98,10 @@ jobs:
         run:  zip -r app_artifact.zip .
         working-directory: ${{ github.workspace }}
             
-      # - name: Archive Artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: webapp-artifact
-      #     path: webapp.zip
+      # Delete existing custom image if it exists
+      - name: Delete existing custom image
+        run: |
+          gcloud compute images delete custom-image --quiet || true
 
       - name: Run Packer to build custom image
         run: |
@@ -110,4 +109,3 @@ jobs:
           ls ${{ github.workspace }}
           packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
-        # working-directory: ${{ github.workspace }}/webapp
