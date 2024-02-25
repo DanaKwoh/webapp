@@ -117,7 +117,10 @@ jobs:
           version: 'latest'
 
       - name: Checjk content
-        run:  cd ${{ github.workspace }}
+        run:  |
+          pwd
+          ls
+          cd ${{ github.workspace }}
      
       - name: Initialize Packer
         run: packer init .
