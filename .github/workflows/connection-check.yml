@@ -16,21 +16,27 @@ jobs:
         uses: actions/checkout@v2
       
 
-      - name: Start MySQL Service
+      - name: Install MySQL
         run: |
           sudo apt-get update
-          sudo apt-get install mysql-server
-          sudo mysql_secure_installation
+          sudo apt-get install -y mysql-server
 
-      - name: Log in as SQL root user
-        run: |
-          sudo mysql -u root -p
-      - name: set new pwd
-        run: |
-          CREATE USER '${{secrets.DB_NAME}}'@'localhost' IDENTIFIED BY '${{secrets.DB_PASSWORD}}';
-          GRANT ALL PRIVILEGES ON *.* TO '${{secrets.DB_USER}}'@'localhost' WITH GRANT OPTION;
-          FLUSH PRIVILEGES;
+      - name: Start MySQL Service
+        run: sudo systemctl start mysql
 
+      - name: Check MySQL Service Status
+        run: sudo systemctl status mysql --no-pager
+
+      - name: Set up MySQL User and Database
+        run: |
+          sudo mysql -e "CREATE DATABASE IF NOT EXISTS my_database;"
+          sudo mysql -e "CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'my_password';"
+          sudo mysql -e "GRANT ALL PRIVILEGES ON my_database.* TO 'my_user'@'localhost';"
+          sudo mysql -e "FLUSH PRIVILEGES;"
+
+      - name: Test MySQL Connection
+        run: |
+          mysql -h localhost -u my_user -pmy_password -e "SHOW DATABASES;"
 
 
       - name: Set up Node.js
