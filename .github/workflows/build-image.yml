@@ -68,6 +68,10 @@ jobs:
       - name: Run integration test 2
         run: node tests/test2.js
 
+      - name: Stop the app
+        run:
+
+
       - name: Write GCP Credentials File
         env:
           CREDENTIALS_GCP: ${{ secrets.CREDENTIAL_GCP }}
@@ -81,32 +85,37 @@ jobs:
       
       - name: Build Application Artifact
         run:  zip -r webapp.zip .
-        # working-directory: webapp
-        
-      # - name: Archive Artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: webapp-artifact
-      #     path: webapp.zip
+        working-directory: webapp
+            
+      - name: Archive Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: webapp-artifact
+          path: webapp.zip
+    
+
+  build-custom-image:
+    needs: build-artifact  # This ensures Packer job runs only if the build job succeeds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: webapp-artifact
+          path: /tmp
+
+      - name: Unzip Artifact
+        run: unzip -q /tmp/webapp.zip -d /tmp/webapp
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@main
+        with:
+          version: 'latest'
       
-
-  # build-custom-image:
-  #   needs: build-artifact  # This ensures Packer job runs only if the build job succeeds
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     # - name: Setup gcloud CLI
-  #     #   uses: google-github-actions/setup-gcloud@v2
-  #     #   # Setup and configure steps
-
-      # - name: Download Artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: webapp-artifact
-      #     path: /tmp
-          
-      - name: Build Custom Image with Packer
-        run: |
-          packer init .
-          packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
+      - name: Initialize Packer
+        run: packer init .
         working-directory: /tmp/webapp
-        # Packer build step
+
+      - name: Build Custom Image with Packer
+        run: packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
+        working-directory: /tmp/webapp
