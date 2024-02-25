@@ -111,7 +111,7 @@ jobs:
         uses: hashicorp/setup-packer@main
         with:
           version: 'latest'
-
+      
       - name: Initialize Packer
         run: packer init .
         working-directory: /tmp/webapp
