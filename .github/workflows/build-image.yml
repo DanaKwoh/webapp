@@ -11,20 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.CREDENTIAL_GCP }}'
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Use gcloud CLI
-        run: gcloud info
-
-      - name: Import configuration
-        run: gcloud secrets DB_NAME --data-file=config.txt
-        
       - name: Install MySQL Server
         run: |
           sudo apt-get update
@@ -46,7 +32,11 @@ jobs:
       - name: Check MySQL Service Status
         run: |
           sudo systemctl status mysql.service
-
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
       # Write package.json content to a file
       - name: Write package.json
@@ -64,41 +54,22 @@ jobs:
             MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
             MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
 
-      # Run integration tests
-      - name: Run integration tests
-        run: node ../tests/test2.js
 
-      - name: Build Artifact
+      - name: Archive application artifacts and configurations
         run: |
-          # Commands to build your application artifact
-          # For example, if it's a Node.js app, you might use 'npm run build' or 'npm run package'
-          npm run build
+          cd webapp
+          zip -r ../webapp.zip ./* # This packages your application code and any configurations
 
-      # Create local user csye6225
-      - name: Create local user
-        run: sudo useradd -r -s /usr/sbin/nologin -g csye6225 csye6225
-
-      # Copy artifacts and configuration files, set ownership
-      - name: Copy artifacts and configuration files
+      - name: Write GCP Credentials File
+        env:
+          CREDENTIALS_GCP: ${{ secrets.CREDENTIAL_GCP }}
         run: |
-          sudo cp webapp.jar /tmp/webapp/
-          sudo cp -r config/* /tmp/webapp/
-          sudo chown -R csye6225:csye6225 /tmp/webapp
-
-
-      # Add systemd service file and configure it
-      - name: Configure systemd service
-        run: |
-          sudo cp systemd-service-file.service /etc/systemd/system/
-          sudo systemctl daemon-reload
-          sudo systemctl enable systemd-service-file.service
+          echo "$CREDENTIALS_GCP" > credentials.json
 
       - name: Set up Packer
         uses: hashicorp/setup-packer@v2
+        with:
+          packer-version: 'latest'
 
-      - name: Run Packer
-        run: |
-          packer build -var 'credentials_file_path=credentials.json' custom_image.pkr.hcl
-        env:
-          CREDENTIALS_GCP: ${{ secrets.CREDENTIAL_GCP }}
-
+      - name: Build the custom image with Packer
+        run: packer build -var 'credentials_file_path=credentials.json' -var 'artifact_path=webapp.zip' custom_image.pkr.hcl

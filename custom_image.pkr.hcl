@@ -6,6 +6,7 @@ packer {
     }
   }
 }
+
 variable "credentials_file_path" {
   type    = string
   default = "credentials.json"  # Set a default value
@@ -28,25 +29,38 @@ build {
   sources = ["source.googlecompute.centos_stream_8"]
 
   provisioner "file" {
-    source      = "webapp.jar"
-    destination = "/app/webapp.jar"
+    source      = "webapp.zip"
+    destination = "/tmp/webapp.zip"
   }
 
-  provisioner "file" {
-    source      = "config/"
-    destination = "/app/config/"
-  }
+  # provisioner "file" {
+  #   source      = "config/"
+  #   destination = "/app/config/"
+  # }
 
   provisioner "shell" {
     inline = [
-      # Create local user csye6225
+      # Update and install necessary packages
+      "sudo apt-get update",
+      "sudo apt-get install -y nodejs npm",
+
+      # Create non-login user and group
+      "sudo groupadd -f csye6225",
       "sudo useradd -r -s /usr/sbin/nologin -g csye6225 csye6225",
-      # Install application dependencies and set up the application
-      "sudo chown -R csye6225:csye6225 /app/",
-      # Add systemd service file and configure it
-      "sudo cp /app/config/systemd-service-file.service /etc/systemd/system/",
+
+      # Unzip application artifacts
+      "sudo mkdir -p /app",
+      "sudo unzip /tmp/webapp.zip -d /app",
+      "sudo chown -R csye6225:csye6225 /app",
+
+      # Install application dependencies
+      "cd /app && sudo npm install",
+
+      # Copy and configure systemd service
+      "sudo cp /app/webapp.service /etc/systemd/system/webapp.service",
       "sudo systemctl daemon-reload",
-      "sudo systemctl enable systemd-service-file.service"
+      "sudo systemctl enable webapp.service",
+      
     ]
   }
 }
