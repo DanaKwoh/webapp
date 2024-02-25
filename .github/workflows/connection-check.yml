@@ -20,18 +20,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install mysql-server
-          sudo systemctl start mysql.service
-          sudo systemctl enable mysql
+          sudo mysql_secure_installation
 
       - name: Log in as SQL root user
         run: |
-          sudo mysql -u root 
+          sudo mysql -u root -p
       - name: set new pwd
         run: |
-          flush privileages; use mysql;
-          select User,Password,Host from user;
-          ALTER USER 'root'@'localhost' IDENTIFIED BY '${{secrets.DB_PASSWORD}}';
-          
+          CREATE USER '${{secrets.DB_NAME}}'@'localhost' IDENTIFIED BY '${{secrets.DB_PASSWORD}}';
+          GRANT ALL PRIVILEGES ON *.* TO '${{secrets.DB_USER}}'@'localhost' WITH GRANT OPTION;
+          FLUSH PRIVILEGES;
+
+
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
