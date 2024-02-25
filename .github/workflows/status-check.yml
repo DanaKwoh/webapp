@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*.hcl' # Run this workflow for pull requests that include .hcl files
     types: [opened, synchronize]
 jobs:
   validate-packer-template:
@@ -13,6 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v2
+        with:
+          packer-version: 'latest' # Use the latest version of Packer
+
       - name: Set up Credentials File
         env:
           CREDENTIALS_JSON: ${{ secrets.CREDENTIAL_GCP }}
@@ -20,15 +27,14 @@ jobs:
           echo "$CREDENTIALS_JSON" > credentials.json
           echo "Credentials file created."
 
-      - name: Install plugins for Packer
-        run: packer init custom_image.pkr.hcl
+      - name: Run packer fmt
+        run: |
+          packer fmt -check -diff custom-image.pkr.hcl
+          if [ $? -ne 0 ]; then
+            echo "Packer fmt has made changes to the template. Please run 'packer fmt custom-image.pkr.hcl' locally and commit the changes."
+            exit 1
+          fi
 
-      # Run 'packer fmt' to format the Packer template
-      - name: Format Packer template
-        run: packer fmt custom_image.pkr.hcl
-
-      # Run 'packer validate' to validate the Packer template
-      - name: Validate Packer template
-        run: packer validate custom_image.pkr.hcl
-   
+      - name: Run packer validate
+        run: packer validate custom-image.pkr.hcl
 
