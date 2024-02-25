@@ -75,18 +75,6 @@ source "googlecompute" "centos_stream_8" {
 
 build {
   sources = ["source.googlecompute.centos_stream_8"]
-  
-  # Provisioner to delete the existing image if it exists
-  provisioner "shell" {
-    inline = [
-      "if gcloud compute images describe ${var.image_name} --project ${var.project_id} &> /dev/null; then",
-      "  echo 'Image exists, deleting...'",
-      "  gcloud compute images delete ${var.image_name} --quiet",
-      "else",
-      "  echo 'Image does not exist, continuing...'",
-      "fi"
-    ]
-  }
 
   provisioner "file" {
     source      = var.source
