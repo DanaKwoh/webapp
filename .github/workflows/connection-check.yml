@@ -31,7 +31,7 @@ jobs:
           sudo mysql -e "CREATE USER '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_USER_PASSWORD}';" -p"${MYSQL_ROOT_PASSWORD}"
           sudo mysql -e "CREATE DATABASE \`${MYSQL_DB_NAME}\`;" -p"${MYSQL_ROOT_PASSWORD}"
           sudo mysql -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DB_NAME}\`.* TO '${MYSQL_USER}'@'localhost';" -p"${MYSQL_ROOT_PASSWORD}"
-            udo mysql -e "FLUSH PRIVILEGES;" -p"${MYSQL_ROOT_PASSWORD}"
+          sudo mysql -e "FLUSH PRIVILEGES;" -p"${MYSQL_ROOT_PASSWORD}"
         
         
         
