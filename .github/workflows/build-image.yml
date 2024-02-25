@@ -115,7 +115,11 @@ jobs:
         uses: hashicorp/setup-packer@main
         with:
           version: 'latest'
-      
+
+      - name: Checjk content
+        run:  ls
+        working-directory: ${{ github.workspace }}
+
       - name: Initialize Packer
         run: packer init .
         working-directory: ${{ github.workspace }}
