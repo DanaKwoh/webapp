@@ -106,6 +106,7 @@ jobs:
           
       - name: Build Custom Image with Packer
         run: |
-          # packer init .
+          packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
+        working-directory: /tmp/webapp
         # Packer build step
