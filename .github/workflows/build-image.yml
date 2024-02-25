@@ -71,7 +71,7 @@ jobs:
       - name: Stop the app
         run: |
           # Find the process ID of the Node.js application
-          PID=$(sudo lsof -t -i:your_port_number) # Replace "your_port_number" with the port number of your Node.js application
+          PID=$(sudo lsof -t -i:${{secrets.MYSQL_PORT}}) 
           
           # Check if the process ID exists
           if [ -n "$PID" ]; then
