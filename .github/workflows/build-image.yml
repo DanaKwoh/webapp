@@ -104,12 +104,6 @@ jobs:
           name: webapp-artifact
           path: /home/runner/work
           
-        
-      - name: Set up Packer
-        uses: hashicorp/setup-packer@main
-        with:
-          version: 'latest'
-          
       - name: Build Custom Image with Packer
         run: |
           cd /home/runner/work/webapp
