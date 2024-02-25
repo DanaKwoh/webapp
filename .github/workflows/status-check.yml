@@ -16,9 +16,9 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Set up Packer
-        uses: hashicorp/setup-packer@v2
+        uses: hashicorp/setup-packer@main
         with:
-          packer-version: 'latest' # Use the latest version of Packer
+          version: 'latest' # Use the latest version of Packer
 
       - name: Set up Credentials File
         env:
@@ -26,6 +26,11 @@ jobs:
         run: |
           echo "$CREDENTIALS_JSON" > credentials.json
           echo "Credentials file created."
+      
+      - name: Run `packer init`
+        id: init
+        run: packer init custom-image.pkr.hcl
+  
 
       - name: Run packer fmt
         run: |
