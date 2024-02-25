@@ -107,12 +107,7 @@ jobs:
         uses: hashicorp/setup-packer@main
         with:
           version: 'latest'
-      - name: Prepare Packer Configuration
-        run: |
-          cp /tmp/webapp.zip /tmp/webapp/
-          cp /tmp/webapp/custom_image.pkr.hcl /tmp/webapp/
-          cp /tmp/webapp/var.pkrvars.hcl /tmp/webapp/
-
+          
       - name: Build Custom Image with Packer
         run: |
           cd /tmp/webapp
