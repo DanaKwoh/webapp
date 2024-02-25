@@ -9,21 +9,19 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    services:
-      # Set up any necessary services for integration testing
-      mysql:
-        image: mysql:latest
-        env:
-            MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      MYSQL_DATABASE: ${{ secrets.DB_NAME }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - name: Start MySQL service
+        run: sudo systemctl start mysql.service
+
+      - name: Wait for MySQL to start
+        run: sudo systemctl status mysql.service
 
       - name: Set up Node.js
         uses: actions/setup-node@v2

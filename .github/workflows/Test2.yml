@@ -16,15 +16,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install MySQL client
-        run: sudo apt-get install mysql-client -y
-
       - name: Start MySQL service
         run: sudo systemctl start mysql.service
 
       - name: Wait for MySQL to start
         run: sudo systemctl status mysql.service
-
           
       - name: Set up Node.js
         uses: actions/setup-node@v2
