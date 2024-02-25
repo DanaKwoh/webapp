@@ -7,30 +7,77 @@ packer {
   }
 }
 
-variable "credentials_file_path" {
-  type    = string
-  default = "credentials.json" # Set a default value
+variable "project_id" {
+  type        = string
+  description = "The GCP project ID."
+}
+variable "source_image_family" {
+  type        = string
+  description = "The source image family for the GCP instance."
+}
+variable "zone" {
+  type        = string
+  description = "The GCP zone where the instance will be created."
+}
+variable "ssh_username" {
+  type        = string
+  description = "Username for SSH access."
+}
+variable "image_name" {
+  type        = string
+  description = "The name of the output custom image."
+}
+variable "image_description" {
+  type        = string
+  description = "Description for the custom image."
+}
+variable "image_family" {
+  type        = string
+  description = "The family of the custom image."
+}
+variable "network" {
+  type        = string
+  description = "The network where the GCP instance will be connected."
+}
+variable "tags" {
+  type        = list(string)
+  description = "A list of tags to apply to the instance."
+}
+variable "credentials_file" {
+  type        = string
+  description = "Path to the GCP credentials file."
+}
+variable "source" {
+  type        = string
+  description = "Source file or directory for file provisioner."
+}
+variable "destination" {
+  type        = string
+  description = "Destination path for file provisioner."
 }
 
+
+
+
 source "googlecompute" "centos_stream_8" {
-  project_id          = "cloudcomputing-415019"
-  source_image_family = "centos-stream-8"
-  zone                = "us-central1-a"
-  ssh_username        = "centos"
-  image_name          = "custom-image"
-  image_description   = "Custom image based on CentOS Stream 8."
-  image_family        = "centos-stream-8"
-  network             = "default"
-  tags                = ["http-server"]
-  credentials_file    = var.credentials_file_path
+  project_id          = var.project_id
+  source_image_family = var.source_image_family
+  zone                = var.zone
+  ssh_username        = var.ssh_username
+  image_name          = var.image_name
+  image_description   = var.image_description
+  image_family        = var.image_family
+  network             = var.network
+  tags                = var.tags
+  credentials_file    = var.credentials_file
 }
 
 build {
   sources = ["source.googlecompute.centos_stream_8"]
 
   provisioner "file" {
-    source      = "webapp.zip"
-    destination = "/tmp/webapp.zip"
+    source      = var.source
+    destination = var.destination
   }
 
   # provisioner "file" {

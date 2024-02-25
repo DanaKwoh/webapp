@@ -30,7 +30,9 @@ jobs:
       - name: Run `packer init`
         id: init
         run: packer init custom_image.pkr.hcl
-  
+      
+      - name: Build Application Artifact
+        run: zip -r webapp.zip .
 
       - name: Run packer fmt
         run: |
@@ -41,5 +43,5 @@ jobs:
           fi
 
       - name: Run packer validate
-        run: packer validate custom_image.pkr.hcl
+        run: packer validate -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
 

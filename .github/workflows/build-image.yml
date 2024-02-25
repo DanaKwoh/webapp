@@ -9,8 +9,14 @@ on:
 jobs:
   build-and-create-image:
     runs-on: ubuntu-latest
+    env:
+      MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      MYSQL_DATABASE: ${{ secrets.DB_NAME }}
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
       - name: Install MySQL Server
         run: |
           sudo apt-get update
@@ -32,16 +38,16 @@ jobs:
       - name: Check MySQL Service Status
         run: |
           sudo systemctl status mysql.service
-          
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-
+    
       # Write package.json content to a file
       - name: Write package.json
         run: npm init -y
-
+        
       - name: Install packages
         run: npm install express sequelize dotenv mysql2 bcrypt basic-auth ci axios
 
@@ -54,11 +60,13 @@ jobs:
             MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
             MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
 
+      # Run integration tests
+      - name: Run integration test 1
+        run: node tests/test1.js
 
-      - name: Archive application artifacts and configurations
-        run: |
-          cd webapp
-          zip -r ../webapp.zip ./* # This packages your application code and any configurations
+      # Run integration tests
+      - name: Run integration test 2
+        run: node tests/test2.js
 
       - name: Write GCP Credentials File
         env:
@@ -70,6 +78,40 @@ jobs:
         uses: hashicorp/setup-packer@main
         with:
           version: 'latest'
+      
+      
+      - name: Build Application Artifact
+        run: zip -r webapp.zip .
+        
+      - name: Archive Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: webapp-artifact
+          path: webapp.zip
+      
 
-      - name: Build the custom image with Packer
-        run: packer build -var 'credentials_file_path=credentials.json' -var 'artifact_path=webapp.zip' custom_image.pkr.hcl
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Add other steps (setup Node.js, install dependencies, run tests, build artifact)
+
+  packer-build:
+    needs: build  # This ensures Packer job runs only if the build job succeeds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        # Setup and configure steps
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        # Download artifact step
+
+      - name: Build Custom Image with Packer
+        run: |
+          packer init .
+          packer build packer-template.json
+        # Packer build step
