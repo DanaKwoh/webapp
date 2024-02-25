@@ -101,7 +101,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: webapp-artifact
-          path: ./
+          path: ../
 
       - name: Set up Packer
         uses: hashicorp/setup-packer@main
@@ -109,7 +109,7 @@ jobs:
           version: 'latest'
       - name: Build Custom Image with Packer
         run: |
-
+          cd webapp
           packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
         # Packer build step
