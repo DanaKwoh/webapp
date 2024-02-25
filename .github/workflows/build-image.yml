@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build-and-create-image:
+  build-artifact:
     runs-on: ubuntu-latest
     env:
       MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -90,16 +90,8 @@ jobs:
           path: webapp.zip
       
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # Add other steps (setup Node.js, install dependencies, run tests, build artifact)
-
   packer-build:
-    needs: build  # This ensures Packer job runs only if the build job succeeds
+    needs: build-artifact  # This ensures Packer job runs only if the build job succeeds
     runs-on: ubuntu-latest
     steps:
       - name: Setup gcloud CLI
@@ -113,5 +105,5 @@ jobs:
       - name: Build Custom Image with Packer
         run: |
           packer init .
-          packer build packer-template.json
+          packer build -var-file="var.pkrvars.hcl" packer-template.json
         # Packer build step
