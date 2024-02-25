@@ -80,9 +80,8 @@ jobs:
           version: 'latest'
       
       - name: Build Application Artifact
-        run: |
-          cd ../
-          zip -r webapp.zip .
+        run:  zip -r webapp.zip .
+        # working-directory: webapp
         
       # - name: Archive Artifact
       #   uses: actions/upload-artifact@v2
@@ -103,11 +102,10 @@ jobs:
       #   uses: actions/download-artifact@v2
       #   with:
       #     name: webapp-artifact
-      #     path: /home/runner/work
+      #     path: /tmp
           
       - name: Build Custom Image with Packer
         run: |
-
-          packer init .
+          # packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
         # Packer build step
