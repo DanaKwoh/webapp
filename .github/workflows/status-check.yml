@@ -29,7 +29,7 @@ jobs:
       
       - name: Run `packer init`
         id: init
-        run: packer init custom-image.pkr.hcl
+        run: packer init custom_image.pkr.hcl
   
 
       - name: Run packer fmt
@@ -41,5 +41,5 @@ jobs:
           fi
 
       - name: Run packer validate
-        run: packer validate custom-image.pkr.hcl
+        run: packer validate custom_image.pkr.hcl
 

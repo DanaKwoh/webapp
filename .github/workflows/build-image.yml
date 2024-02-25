@@ -67,9 +67,9 @@ jobs:
           echo "$CREDENTIALS_GCP" > credentials.json
 
       - name: Set up Packer
-        uses: hashicorp/setup-packer@v2
+        uses: hashicorp/setup-packer@main
         with:
-          packer-version: 'latest'
+          version: 'latest'
 
       - name: Build the custom image with Packer
         run: packer build -var 'credentials_file_path=credentials.json' -var 'artifact_path=webapp.zip' custom_image.pkr.hcl
