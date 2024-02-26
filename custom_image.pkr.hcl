@@ -55,7 +55,10 @@ variable "destination" {
   type        = string
   description = "Destination path for file provisioner."
 }
-
+variable "app_location" {
+  type        = string
+  description = "Path to the application folder in image."
+}
 
 
 
@@ -92,16 +95,16 @@ build {
       "sudo yum install -y unzip",
 
       # Change ownership of the copied application folder
-      "sudo mkdir -p /opt/csye6225",
-      "sudo chown -R csye6225:csye6225 /opt/csye6225",
+      "sudo mkdir -p ${var.app_location}",
+      "sudo chown -R csye6225:csye6225 ${var.app_location}",
 
       # Unzip application artifacts: app_artifact.zip
-      "sudo unzip -o ${var.destination} -d /opt/csye6225",
+      "sudo unzip -o ${var.destination} -d ${var.app_location}",
 
       # Copy and configure systemd service
-      "sudo cp /opt/csye6225/webapp.service /etc/systemd/system/webapp.service",
-      "sudo systemctl daemon-reload",
+      "sudo mv ${var.app_location}/webapp.service /etc/systemd/system/webapp.service",
       "sudo systemctl enable webapp.service",
+      "sudo systemctl start myapp.service"
     ]
   }
 }
