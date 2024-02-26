@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build-artifact:
+  build-artifact-image:
     runs-on: ubuntu-latest
     env:
       MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
