@@ -102,8 +102,7 @@ jobs:
           ls -a
           packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
-
-      
+   
   manage-instance-group:
     name: Manage Instance Group Update
     runs-on: ubuntu-latest
