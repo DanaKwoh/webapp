@@ -136,7 +136,6 @@ jobs:
          
       - name: Monitor instance group refresh
         run: |
-          # Replace PLACEHOLDERS with actual values
           while true; do
             # Check the status of the instance group refresh
             status=$(gcloud compute instance-groups managed describe webapp-manager  --format='value(currentActions.replacing.versionInstaneTemplate.version)' 2>/dev/null)
