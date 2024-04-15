@@ -131,14 +131,12 @@ jobs:
         run: |
           gcloud compute instance-groups managed set-instance-template webapp-manager \
             --template new-web-server 
-          
       
       - name: Start rolling update
         run: |
           gcloud compute instance-groups managed rolling-action start-update webapp-manager \
             --version template=new-web-server 
          
-            
       - name: Monitor instance group refresh
         run: |
           # Replace PLACEHOLDERS with actual values
