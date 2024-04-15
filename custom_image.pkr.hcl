@@ -115,7 +115,7 @@ build {
   }
   post-processor "shell-local"{
     inline = [
-      "echo 'Image ID: ${source.googlecompute.centos_stream_8.image}' > image_id.txt"
+      "echo '${source.googlecompute.centos_stream_8.image}' > image_id.txt"
     ]
   }
 }
