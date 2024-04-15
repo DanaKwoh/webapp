@@ -16,13 +16,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Install MySQL Server
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-server
           sudo systemctl start mysql.service
-  
+
       - name: Configure MySQL
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
@@ -43,14 +43,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.17.0
-    
+
       # Write package.json content to a file
       - name: Write package.json
         run: npm init -y
-        
+
       - name: Install packages
         run: npm install express sequelize dotenv mysql2 bcrypt basic-auth ci axios node-json-logger @google-cloud/logging @google-cloud/pubsub
-      
+
       - name: Run the app
         run: nohup node app.js &
         env:
@@ -73,11 +73,11 @@ jobs:
         run: |
           # Find the process ID of the Node.js application
           PID=$(sudo lsof -t -i:${{secrets.MYSQL_PORT}}) 
-          
+
           # Check if the process ID exists
           if [ -n "$PID" ]; then
             echo "Stopping Node.js application with PID $PID"
-            
+
             # Terminate the Node.js application
             sudo kill -9 $PID
           else
@@ -88,14 +88,14 @@ jobs:
         uses: hashicorp/setup-packer@main
         with:
           version: 'latest'
-      
+
       - name: Write GCP Credentials File
-        run: echo "$CREDENTIALS_GCP" > credentials.json
-      
+        run: echo "$GOOGLE_APPLICATION_CREDENTIALS" > credentials.json
+
       - name: Build Application Artifact
         run:  zip -r app_artifact.zip .
         working-directory: ${{ github.workspace }}
-          
+
       - name: Run Packer to build custom image
         run: |
           cd ${{ github.workspace }}
@@ -122,24 +122,24 @@ jobs:
         run: |
           gcloud compute instance-templates create new-web-server \
             --source-instance-template web-server \
-            --image ${{steps.get-latest-image-id.outputs.image_id}} 
-          
+            --image ${{ steps.get-latest-image-id.outputs.image_id }} 
+
       - name: Configure managed instance group
         run: |
           gcloud compute instance-groups managed set-instance-template webapp-manager \
             --template new-web-server 
-      
+
       - name: Start rolling update
         run: |
           gcloud compute instance-groups managed rolling-action start-update webapp-manager \
             --version template=new-web-server 
-         
+
       - name: Monitor instance group refresh
         run: |
           while true; do
             # Check the status of the instance group refresh
             status=$(gcloud compute instance-groups managed describe webapp-manager  --format='value(currentActions.replacing.versionInstaneTemplate.version)' 2>/dev/null)
-            
+
             # If the refresh is still in progress, sleep for some time and check again
             if [ "$status" = "new-webapp-server" ]; then
               echo "Waiting for instance group refresh to complete..."
