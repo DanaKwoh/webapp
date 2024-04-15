@@ -103,8 +103,6 @@ jobs:
           packer init .
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
 
-
-
       - name: Authenticate with Google Cloud
         uses: google-github-actions/setup-gcloud@v2
 
@@ -119,7 +117,6 @@ jobs:
           --filter="family=centos-stream-8" --format="value(ID)" --sort-by="creationTimestamp desc" --limit=1)
           echo "Latest Image ID: $IMAGE_ID"
           echo "::set-output name=image_id::$IMAGE_ID"
-
 
       - name: Create new Instance Template version
         run: |
