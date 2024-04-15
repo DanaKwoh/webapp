@@ -113,10 +113,3 @@ build {
       "sudo systemctl enable webapp.service"
     ]
   }
-
-  post-processor "shell-local" {
-    inline = [
-      "echo '${source.googlecompute.centos_stream_8.image}' > image_id.txt"
-    ]
-  }
-}
