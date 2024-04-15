@@ -49,8 +49,8 @@ jobs:
         run: npm init -y
         
       - name: Install packages
-        run: npm install express sequelize dotenv mysql2 bcrypt basic-auth ci axios node-json-logger @google-cloud/logging @google-cloud/pubsub
-      
+        run: npm install express sequelize dotenv mysql2 bcrypt basic-auth ci axios node-json-logger
+
       - name: Run the app
         run: nohup node app.js &
         env:
