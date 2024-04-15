@@ -101,8 +101,8 @@ build {
       "sudo yum install -y unzip",
       "curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -",
       "sudo yum install -y nodejs-18.17.0",
-      "curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh",
-      "sudo bash add-google-cloud-ops-agent-repo.sh --also-install",
+      "curl -sS https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh | sudo bash -",
+      "sudo yum install -y google-cloud-ops-agent",
       "sudo mkdir -p ${var.app_location}",
       "sudo chown -R csye6225:csye6225 ${var.app_location}",
       "sudo unzip -o ${var.destination} -d ${var.app_location}",
@@ -113,7 +113,8 @@ build {
       "sudo systemctl enable webapp.service"
     ]
   }
-  post-processor "shell-local"{
+
+  post-processor "shell-local" {
     inline = [
       "echo '${source.googlecompute.centos_stream_8.image}' > image_id.txt"
     ]
