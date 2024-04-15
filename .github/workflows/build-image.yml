@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build-artifact-image-and-update:
+  build-artifact-and-image:
     runs-on: ubuntu-latest
     env:
       MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
@@ -104,48 +104,44 @@ jobs:
           packer build -var-file="var.pkrvars.hcl" custom_image.pkr.hcl
 
       
-      
+  manage-instance-group:
+    name: Manage Instance Group Update
+    runs-on: ubuntu-latest
+    needs: [build-artifact-and-image]
+    steps:
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           credentials_json: ${{ secrets.CREDENTIAL_GCP }}
 
-      - name: 'Use gcloud CLI'
-        run: 'gcloud info'
-
-      # Retrieve the image ID 
-      - name: Get Image ID 
+      - name: Get Image ID
         id: get-latest-image-id
         run: |
-          IMAGE_ID=$(gcloud compute images list --project=${{ secrets.GCP_PROJECT_ID }} \
-          --filter="family=centos-stream-8" --format="value(ID)" --sort-by="creationTimestamp desc" --limit=1)
+          IMAGE_ID=$(gcloud compute images list --project=${{ secrets.GCP_PROJECT_ID }} --filter="family=centos-stream-8" --format="value(ID)" --sort-by="creationTimestamp desc" --limit=1)
           echo "Latest Image ID: $IMAGE_ID"
           echo "::set-output name=image_id::$IMAGE_ID"
 
-      - name: Create new Instance Template version
+      - name: Create new Instance Template
         run: |
-          gcloud compute instance-templates create new-web-server \
-            --source-instance-template web-server \
-            --image ${{ steps.get-latest-image-id.outputs.image_id }} 
+          gcloud compute instances create web-server-example --source-instance-template=web-server --zone=us-central1-c --no-address --subnet=webapp
+
+      - name: Create new Instance Template Version
+        run: |
+          gcloud compute instance-templates create new-web-server --source-instance=web-server-example --source-instance-zone=us-central1-c --boot-disk-size=100GB --address="" --configure-disk=device-name=persistent-disk-0,instantiate-from=custom-image,custom-image="${{ steps.get-latest-image-id.outputs.image_id }}"
 
       - name: Configure managed instance group
         run: |
-          gcloud compute instance-groups managed set-instance-template webapp-manager \
-            --template new-web-server 
+          gcloud compute instance-groups managed set-instance-template webapp-manager --template new-web-server --zone=us-central1-c
 
       - name: Start rolling update
         run: |
-          gcloud compute instance-groups managed rolling-action start-update webapp-manager \
-            --version template=new-web-server 
+          gcloud compute instance-groups managed rolling-action start-update webapp-manager --version template=new-web-server --zone=us-central1-c
 
       - name: Monitor instance group refresh
         run: |
           while true; do
-            # Check the status of the instance group refresh
-            status=$(gcloud compute instance-groups managed describe webapp-manager  --format='value(currentActions.replacing.versionInstaneTemplate.version)' 2>/dev/null)
-
-            # If the refresh is still in progress, sleep for some time and check again
+            status=$(gcloud compute instance-groups managed describe webapp-manager --format='value(currentActions.replacing.versionInstaneTemplate.version)' 2>/dev/null)
             if [ "$status" = "new-webapp-server" ]; then
               echo "Waiting for instance group refresh to complete..."
               sleep 10
@@ -154,4 +150,3 @@ jobs:
               break
             fi
           done
-
