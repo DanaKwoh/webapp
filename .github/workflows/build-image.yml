@@ -140,16 +140,6 @@ jobs:
         run: |
           gcloud compute instance-groups managed rolling-action start-update webapp-manager --version template=new-web-server --zone=us-central1-c
 
-      - name: Monitor instance group refresh
+      - name: Wait for Refresh to Complete
         run: |
-          while true; do
-            status=$(gcloud compute instance-groups managed describe webapp-manager --format='value(currentActions.replacing.versionInstaneTemplate.version)' 2>/dev/null)
-            if [ "$status" = "new-webapp-server" ]; then
-              echo "Waiting for instance group refresh to complete..."
-              sleep 10
-            else
-              echo "Instance group refresh completed successfully."
-              break
-            fi
-          done
-          
+          gcloud compute instance-groups managed wait-until webapp-manager --version-target-reached --zone=us-central1-c
