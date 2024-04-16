@@ -117,7 +117,7 @@ jobs:
       - name: Get Image ID
         id: get-latest-image-id
         run: |
-          IMAGE_ID=$(gcloud compute images list --project=${{ secrets.GCP_PROJECT_ID }} --filter="family=centos-stream-8" --format="value(ID)" --sort-by="creationTimestamp desc" --limit=1)
+          IMAGE_ID=$(gcloud compute images list --filter="name=custom-image" --format="value(ID)" --sort-by="creationTimestamp desc" --limit=1)
           echo "Latest Image ID: $IMAGE_ID"
           echo "::set-output name=image_id::$IMAGE_ID"
 
