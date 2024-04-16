@@ -109,7 +109,7 @@ jobs:
     needs: [build-artifact-and-image]
     steps:
       - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           credentials_json: ${{ secrets.CREDENTIAL_GCP }}
@@ -127,7 +127,10 @@ jobs:
 
       - name: Create new Instance Template Version
         run: |
-          gcloud compute instance-templates create new-web-server --source-instance=web-server-example --source-instance-zone=us-central1-c --boot-disk-size=100GB --address="" --configure-disk=device-name=persistent-disk-0,instantiate-from=custom-image,custom-image="${{ steps.get-latest-image-id.outputs.image_id }}"
+          gcloud compute instance-templates create new-web-server \
+          --source-instance=web-server-example --source-instance-zone=us-central1-c \
+          --boot-disk-size=100GB --address="" \
+          --configure-disk=device-name=persistent-disk-0,instantiate-from=custom-image,custom-image="projects/${{secrets.GCP_PROJECT_ID}}/global/images/${{ steps.get-latest-image-id.outputs.image_id }}"
 
       - name: Configure managed instance group
         run: |
