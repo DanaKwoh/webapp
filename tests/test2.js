@@ -3,7 +3,7 @@ const axios = require('axios');
 async function runIntegrationTests() {
   try {
     // Update the account
-    const updateUserResponse = await axios.put('http://127.0.0.1:8080/v1/user/self', {
+    const updateUserResponse = await axios.put('http://127.0.0.1:8080/v2/user/self', {
       lastName: "updatedLastname",
       firstName: "updatedFirstname"
     }, {
@@ -19,7 +19,7 @@ async function runIntegrationTests() {
     }
 
     // Retrieve updated user data with basic authentication
-    const getUserResponse = await axios.get('http://127.0.0.1:8080/v1/user/self', {
+    const getUserResponse = await axios.get('http://127.0.0.1:8080/v2/user/self', {
       auth: {
         username: 'testuser',
         password: 'testpassword'

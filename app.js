@@ -30,9 +30,9 @@ const initializeApp = async () => {
 // Attach health router with health check middleware
 app.use('/healthz', checkHealthMiddleware, healthRouter);
 // Attach user router
-app.use('/v1/user', userRouter);
+app.use('/v2/user', userRouter);
 // Authentication middleware for GET and PUT request
-app.use('/v1/user', (req, res, next) => {
+app.use('/v2/user', (req, res, next) => {
   if (req.method === 'GET' || req.method === 'PUT') {
     authenticateUser(req, res, next);
   } else {
