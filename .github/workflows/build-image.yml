@@ -121,7 +121,7 @@ jobs:
           echo "Latest Image ID: $IMAGE_ID"
           echo "::set-output name=image_id::$IMAGE_ID"
 
-      - name: Create new Instance Template
+      - name: Create Instance Example
         run: |
           gcloud compute instances create web-server-example --source-instance-template=web-server --zone=us-central1-c --no-address --subnet=webapp
 
